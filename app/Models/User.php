@@ -40,7 +40,6 @@ class User extends Authenticatable
         'birthday',
         'phone',
         'avatar',
-        'account_id'
     ];
 
     /**

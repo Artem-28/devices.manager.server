@@ -24,13 +24,21 @@ class Account extends Model
         'title'
     ];
 
+    // Список пользователей
     public function users(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(User::class, 'account_id');
     }
 
+    // Список устройств
     public function controlDevices(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(ControlDevice::class);
+    }
+
+    // Список плей листов
+    public function playLists(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(PlayList::class);
     }
 }
