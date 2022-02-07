@@ -41,4 +41,10 @@ class Account extends Model
     {
         return $this->hasMany(PlayList::class);
     }
+
+    // Список файлов для аккаунта
+    public function files(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(File::class);
+    }
 }

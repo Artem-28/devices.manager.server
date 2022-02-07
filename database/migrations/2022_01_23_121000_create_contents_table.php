@@ -17,6 +17,7 @@ class CreateContentsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('account_id');
             $table->unsignedBigInteger('play_list_id');
+            $table->unsignedBigInteger('file_id')->nullable();
             $table->integer('order');
             $table->string('content_type');
             $table->string('value');

@@ -26,14 +26,16 @@ Route::delete('control-devices/{controlDeviceId}', [\App\Http\Controllers\Api\Co
 
 Route::post('live-check', [\App\Http\Controllers\Api\LiveCheckController::class, 'check']);
 
-Route::post('play-lists', [\App\Http\Controllers\Api\PlayListController::class, 'create']);
-Route::get('play-lists', [\App\Http\Controllers\Api\PlayListController::class, 'store']);
-Route::patch('play-lists/{playListId}', [\App\Http\Controllers\Api\PlayListController::class, 'update']);
-Route::delete('play-lists/{playListId}', [\App\Http\Controllers\Api\PlayListController::class, 'delete']);
+Route::post('playlists', [\App\Http\Controllers\Api\PlayListController::class, 'create']);
+Route::get('playlists', [\App\Http\Controllers\Api\PlayListController::class, 'store']);
+Route::patch('playlists/{playListId}', [\App\Http\Controllers\Api\PlayListController::class, 'update']);
+Route::delete('playlists/{playListId}', [\App\Http\Controllers\Api\PlayListController::class, 'delete']);
 
-Route::post('play-lists/{playListId}/contents', [\App\Http\Controllers\Api\ContentController::class, 'create']);
-Route::get('play-lists/{playListId}/contents', [\App\Http\Controllers\Api\ContentController::class, 'store']);
-Route::patch('play-lists/{playListId}/contents/{contentId}', [\App\Http\Controllers\Api\ContentController::class, 'update']);
-Route::delete('play-lists/{playListId}/contents/{contentId}', [\App\Http\Controllers\Api\ContentController::class, 'delete']);
+Route::post('playlists/{playListId}/contents', [\App\Http\Controllers\Api\ContentController::class, 'create']);
+Route::get('playlists/{playListId}/contents', [\App\Http\Controllers\Api\ContentController::class, 'store']);
+Route::patch('playlists/{playListId}/contents/{contentId}', [\App\Http\Controllers\Api\ContentController::class, 'update']);
+Route::delete('playlists/{playListId}/contents/{contentId}', [\App\Http\Controllers\Api\ContentController::class, 'delete']);
 
 Route::get('content-types', [\App\Http\Controllers\Api\ContentTypeController::class, 'store']);
+
+Route::post('content-file', [\App\Http\Controllers\Api\ContentFileController::class, 'create']);

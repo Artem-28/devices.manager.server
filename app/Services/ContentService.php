@@ -51,6 +51,17 @@ class ContentService
             ->delete();
     }
 
+    public function getContentById($playListId, $contentId)
+    {
+        $accountId = auth()->user()->account_id;
+
+        // Получение контента
+        return Content::where([
+            ['account_id', $accountId],
+            ['play_list_id', $playListId]
+        ])->find($contentId);
+    }
+
     // Обновление контента
     public function updateContent($data, $playListId, $contentId)
     {
@@ -72,6 +83,5 @@ class ContentService
             $content->setting->update($data['setting']);
         }
         return $content;
-
     }
 }

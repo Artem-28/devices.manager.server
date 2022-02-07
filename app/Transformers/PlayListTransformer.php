@@ -6,12 +6,22 @@ use App\Models\PlayList;
 
 class PlayListTransformer extends \League\Fractal\TransformerAbstract
 {
-    public function transform(PlayList $playList): array
+    protected $defaultIncludes = [
+        'contents',
+    ];
+
+    public function transform(PlayList $playlist): array
     {
         return [
-            'id' => $playList->id,
-            'title' => $playList->title,
-            'description' => $playList->description
+            'id' => $playlist->id,
+            'title' => $playlist->title,
+            'description' => $playlist->description
         ];
+    }
+
+    public function includeContents(PlayList $playlist): \League\Fractal\Resource\Collection
+    {
+        $contents = $playlist->contents;
+        return $this->collection($contents, new ContentSettingTransformer());
     }
 }

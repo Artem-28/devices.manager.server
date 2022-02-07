@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $account_id
  * @property int $play_list_id
+ * @property int|null $file_id
  * @property string $content_type
  * @property int $order
  * @property string $value
@@ -26,11 +27,13 @@ class Content extends Model
         'order',
         'value',
         'title',
-        'description'
+        'description',
+        'file_id'
     ];
 
     protected $with = [
-        'setting'
+        'setting',
+        'file'
     ];
 
     // Привязанный аккаунт
@@ -55,5 +58,10 @@ class Content extends Model
     public function type(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(ContentType::class, 'slug', 'content_type');
+    }
+
+    public function file(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(File::class);
     }
 }

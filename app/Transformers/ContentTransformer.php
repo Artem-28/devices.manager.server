@@ -7,7 +7,8 @@ use App\Models\Content;
 class ContentTransformer extends \League\Fractal\TransformerAbstract
 {
     protected $defaultIncludes = [
-        'setting'
+        'setting',
+        'file'
     ];
 
     public function transform(Content $content): array
@@ -28,5 +29,13 @@ class ContentTransformer extends \League\Fractal\TransformerAbstract
     {
         $setting = $content->setting;
         return $this->item($setting, new ContentSettingTransformer());
+    }
+
+    public function includeFile(Content $content)
+    {
+        $file = $content->file;
+        if($file) {
+            return $this->item($file, new FileTransformer());
+        }
     }
 }

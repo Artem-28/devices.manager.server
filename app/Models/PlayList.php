@@ -22,6 +22,9 @@ class PlayList extends Model
         'title',
         'description'
     ];
+    protected $with = [
+        'contents'
+    ];
 
     // Привязанный аккаунт
     public function account(): \Illuminate\Database\Eloquent\Relations\BelongsTo

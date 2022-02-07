@@ -39,7 +39,7 @@ class PlayListController extends Controller
         $resource = new Item($playList, new PlayListTransformer());
         return response()->json([
             'success' => true,
-            'playList' => $this->createData($resource)
+            'playlist' => $this->createData($resource)
         ]);
     }
 
@@ -60,7 +60,7 @@ class PlayListController extends Controller
         $resource = new Collection($playLists, new PlayListTransformer());
         return response()->json([
             'success' => true,
-            'playLists' => $this->createData($resource)
+            'playlists' => $this->createData($resource)
         ]);
     }
 
@@ -82,7 +82,7 @@ class PlayListController extends Controller
         $resource = new Item($playList, new PlayListTransformer());
         return response()->json([
             'success' => true,
-            'playList' => $this->createData($resource)
+            'playlist' => $this->createData($resource)
         ]);
     }
 

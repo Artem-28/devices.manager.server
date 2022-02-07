@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Services\ContentService;
+use App\Services\ContentTypeService;
+use App\Services\FileService;
 use App\Services\PlayListService;
 use App\Traits\DataPreparation;
 use App\Transformers\ContentTransformer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 
@@ -16,17 +19,23 @@ class ContentController extends Controller
     use DataPreparation;
     private $playListService;
     private $contentService;
+    private $contentTypeService;
+    private $fileService;
 
     public function __construct
     (
         PlayListService $playListService,
-        ContentService $contentService
+        ContentService $contentService,
+        ContentTypeService $contentTypeService,
+        FileService $fileService
     )
     {
         $this->middleware('auth:sanctum');
 
         $this->playListService = $playListService;
         $this->contentService = $contentService;
+        $this->contentTypeService = $contentTypeService;
+        $this->fileService = $fileService;
     }
 
     // Создание контента для плейлиста
@@ -43,6 +52,15 @@ class ContentController extends Controller
             }
 
             $data = $request->only(['content', 'setting']);
+            $contentType = $data['content']['content_type'];
+
+            // Проверяем нужен ли файл для этого типа контента
+            if($this->contentTypeService->isNeedAFile($contentType)) {
+                $filePath = $data['content']['value'];
+                $file = $this->fileService->getFileByPath($filePath, $playList->account_id);
+                $data['content']['file_id'] = $file->id;
+            }
+
             $content = $this->contentService->createContent($data, $playList);
 
         } catch (\Exception $exception) {
@@ -85,8 +103,38 @@ class ContentController extends Controller
     public function update(Request $request, $playListId, $contentId): \Illuminate\Http\JsonResponse
     {
         try {
-            $data = $request->only(['content', 'setting']);
-            $content = $this->contentService->updateContent($data, $playListId, $contentId);
+            $contentData = $request->get('content');
+            $settingData = $request->get('setting');
+
+            $content = DB::transaction(function () use (
+                $contentData,
+                $settingData,
+                $playListId,
+                $contentId
+            ) {
+                // Получаем контент
+                $content = $this->contentService->getContentById($playListId, $contentId);
+
+                // Если изменился файл привязываем новый файл
+                if($content && $contentData && array_key_exists('value', $contentData)) {
+                    $file = $this->fileService->getFileByPath($contentData['value'], $content->account_id);
+                    if(!$file) {
+                        throw new \Exception('Файл не найден');
+                    }
+                    $content->file()->associate($file);
+                }
+
+                // Обновление контента
+                if($content && $contentData) {
+                    $content->update($contentData);
+                }
+
+                // Обновление настроек контента
+                if($content && $settingData) {
+                    $content->setting->update($settingData);
+                }
+                return $content;
+            });
 
         } catch (\Exception $exception) {
 
