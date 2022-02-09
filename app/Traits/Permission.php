@@ -29,4 +29,22 @@ trait Permission
         }
         return false;
     }
+
+    // Является ли авторизованная сущность устройством
+    protected function checkPermissionControlDevice($controlDevice)
+    {
+        if(!empty($controlDevice)) {
+            return $controlDevice->tokenCan(Role::CONTROL_DEVICE);
+        }
+        return false;
+    }
+
+    // Является ли авторизованная сущность пользователем
+    protected function checkPermissionUser($user)
+    {
+        if (!empty($user)) {
+            return $user->tokenCan(Role::USER);
+        }
+        return false;
+    }
 }

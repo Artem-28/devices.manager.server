@@ -21,9 +21,9 @@ class AuthController extends Controller
     use DataPreparation;
     use Permission;
 
-    private $userService;
-    private $accountService;
-    private $roleService;
+    private UserService $userService;
+    private AccountService $accountService;
+    private RoleService $roleService;
 
     public function __construct
     (
@@ -32,7 +32,8 @@ class AuthController extends Controller
         RoleService $roleService
     )
     {
-        $this->middleware('auth:sanctum', ['except' => ['login', 'register']] );
+        $this->middleware('auth:sanctum', ['except' => ['register', 'login']] );
+        $this->middleware('auth.user', ['except' => ['register', 'login']]);
         $this->userService = $userService;
         $this->accountService = $accountService;
         $this->roleService = $roleService;
@@ -74,7 +75,7 @@ class AuthController extends Controller
                 'message' => 'Unauthorized'
             ], 401);
         }
-        $token = $user->createToken('auth_token', $user->permissions)->plainTextToken;
+        $token = $user->createToken('auth_token', [...$user->permissions, Role::USER ])->plainTextToken;
         $resource = new Item($user, new UserTransformer());
 
         return response()->json([

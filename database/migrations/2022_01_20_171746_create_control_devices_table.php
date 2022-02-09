@@ -18,8 +18,9 @@ class CreateControlDevicesTable extends Migration
             $table->string('title');
             $table->unsignedBigInteger('account_id');
             $table->string('serial_number')->unique();
-            $table->text('access_token');
+            $table->boolean('confirm')->default(false);
             $table->timestamp('last_contact')->nullable();
+            $table->text('access_token')->nullable();
             $table->timestamps();
 
             $table->foreign('account_id')

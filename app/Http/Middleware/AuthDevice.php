@@ -3,12 +3,14 @@
 namespace App\Http\Middleware;
 
 use App\Services\ControlDeviceService;
+use App\Traits\Permission;
 use Closure;
 use Illuminate\Http\Request;
 
 class AuthDevice
 {
-    private $controlDeviceService;
+    use Permission;
+    private ControlDeviceService $controlDeviceService;
 
     public function __construct(ControlDeviceService $controlDeviceService)
     {
@@ -21,15 +23,17 @@ class AuthDevice
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\JsonResponse
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): \Illuminate\Http\JsonResponse
     {
-        $serialNumber = $request->header('serial-number');
-        $accessToken = $request->header('access-token');
-        $controlDevice = $this->controlDeviceService->getAuthDevice($serialNumber, $accessToken);
-        if ($controlDevice) {
-            $request['controlDevice'] = $controlDevice;
-            return $next($request);
+        $device = auth()->user();
+        if ($device && $this->checkPermissionControlDevice($device)) {
+            $response = $next($request);
+            $device->tokens()->delete();
+            $token = $this->controlDeviceService->createToken($device);
+            $response->header('Access-Token', $token);
+            return $response;
         }
+
         return response()->json([
             'success'=> false,
             'message' => 'device not authorized'

@@ -20,8 +20,10 @@ class Role extends Model
 
     const ADMIN = 'admin';
     const OPERATOR = 'operator';
+    const CONTROL_DEVICE = 'control_device';
+    const USER = 'user';
 
-    protected $fillable = [
+     protected $fillable = [
         'title',
         'description',
         'slug',

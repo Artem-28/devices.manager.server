@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Account;
 use App\Models\ControlDevice;
+use App\Models\Role;
 use Illuminate\Support\Str;
 
 class ControlDeviceService
@@ -11,12 +12,7 @@ class ControlDeviceService
     // Регистрация нового устройства
     public function createDevice($data): ControlDevice
     {
-        $controlDevice = new ControlDevice([
-            'account_id' => auth()->user()->account_id,
-            'title' => $data['title'],
-            'serial_number' => $data['serial_number'],
-            'access_token' => Str::uuid()->toString(),
-        ]);
+        $controlDevice = new ControlDevice($data);
         $controlDevice->save();
         return $controlDevice;
     }
@@ -46,7 +42,18 @@ class ControlDeviceService
     // Получение устройства по id
     public function getControlDeviceById($controlDeviceId)
     {
-        return ControlDevice::where('id', $controlDeviceId)->first();
+        $accountId = auth()->user()->account_id;
+        return ControlDevice::where([['id', $controlDeviceId], ['account_id', $accountId]])->first();
+    }
+
+    // Подтверждение регистрации устройства
+    public function confirmControlDevice(ControlDevice $controlDevice): ControlDevice
+    {
+        $token = $this->createToken($controlDevice);
+        $controlDevice->access_token = $token;
+        $controlDevice->confirm = true;
+        $controlDevice->save();
+        return $controlDevice;
     }
 
     // Удаление устройства
@@ -61,8 +68,23 @@ class ControlDeviceService
     }
 
     // Получение устройства по серийному номеру и токену
-    public function getAuthDevice($serialNumber, $accessToken)
+    public function getDeviceBySerialNumber($serialNumber, $accountId)
     {
-        return ControlDevice::where([['serial_number', $serialNumber], ['access_token', $accessToken]])->first();
+        return ControlDevice::where([['serial_number', $serialNumber], ['account_id', $accountId]])->first();
+    }
+
+    // Создание токена для устройства
+    public function createToken(ControlDevice $controlDevice): string
+    {
+        return $controlDevice->createToken('auth_token', [Role::CONTROL_DEVICE])->plainTextToken;
+    }
+
+    // Получение токена устройства
+    public function getAuthTokenDevice(ControlDevice $controlDevice): string
+    {
+        $token = $controlDevice->access_token;
+        $controlDevice->access_token = null;
+        $controlDevice->save();
+        return $token;
     }
 }

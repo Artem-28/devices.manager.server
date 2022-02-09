@@ -18,14 +18,9 @@ class UserService
         return  $user;
     }
 
+    // Получение пользователя по email
     public function getUserByLogin($login)
     {
        return User::where('email', $login)->first();
-    }
-
-    public function getUserPermissions($user)
-    {
-        $permissions = $user->roles();
-        dd($permissions);
     }
 }

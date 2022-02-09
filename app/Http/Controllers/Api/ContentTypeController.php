@@ -12,10 +12,11 @@ use League\Fractal\Resource\Collection;
 class ContentTypeController extends Controller
 {
     use DataPreparation;
-    private $contentTypeService;
+    private ContentTypeService $contentTypeService;
 
     public function __construct(ContentTypeService $contentTypeService)
     {
+        $this->middleware(['auth:sanctum', 'auth.user']);
         $this->contentTypeService = $contentTypeService;
     }
 

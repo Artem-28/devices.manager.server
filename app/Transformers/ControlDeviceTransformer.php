@@ -14,6 +14,7 @@ class ControlDeviceTransformer extends Fractal\TransformerAbstract
             'serialNumber' => $controlDevice->serial_number,
             'accessToken' => $controlDevice->access_token,
             'title' => $controlDevice->title,
+            'confirm' => $controlDevice->confirm,
             'status' => $controlDevice->status(),
         ];
     }

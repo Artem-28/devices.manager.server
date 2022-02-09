@@ -17,10 +17,10 @@ use League\Fractal\Resource\Item;
 class ContentController extends Controller
 {
     use DataPreparation;
-    private $playListService;
-    private $contentService;
-    private $contentTypeService;
-    private $fileService;
+    private PlayListService $playListService;
+    private ContentService $contentService;
+    private ContentTypeService $contentTypeService;
+    private FileService $fileService;
 
     public function __construct
     (
@@ -30,7 +30,7 @@ class ContentController extends Controller
         FileService $fileService
     )
     {
-        $this->middleware('auth:sanctum');
+        $this->middleware(['auth:sanctum', 'auth.user']);
 
         $this->playListService = $playListService;
         $this->contentService = $contentService;

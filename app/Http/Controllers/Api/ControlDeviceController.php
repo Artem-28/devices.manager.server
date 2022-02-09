@@ -15,12 +15,11 @@ use League\Fractal\Resource\Item;
 class ControlDeviceController extends Controller
 {
     use DataPreparation;
-    private $controlDeviceService;
+    private ControlDeviceService $controlDeviceService;
 
     public function __construct(ControlDeviceService $controlDeviceService)
     {
-        $this->middleware('auth:sanctum');
-
+        $this->middleware(['auth:sanctum', 'auth.user']);
         $this->controlDeviceService = $controlDeviceService;
     }
 
@@ -108,6 +107,44 @@ class ControlDeviceController extends Controller
 
         return response()->json([
             'success' => true,
+        ]);
+    }
+
+    // Подтверждение регистрации устройства
+    public function confirm($controlDeviceId): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $device = $this->controlDeviceService->getControlDeviceById($controlDeviceId);
+            // Если нет устройства или оно не принадлежит пользователю
+            if (!$device) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Устройство не найдено'
+                ], 404);
+            }
+
+            // Если устройство было подтверждено ранее
+            /*if ($device->confirm) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Устройство было подтверждено ранее'
+                ], 500);
+            }*/
+
+            $device = $this->controlDeviceService->confirmControlDevice($device);
+
+        } catch (\Exception $exception) {
+
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage()
+            ], 500);
+        }
+
+        $resource = new Item($device, new ControlDeviceTransformer());
+        return response()->json([
+            'success' => true,
+            'controlDevice' => $this->createData($resource)
         ]);
     }
 }

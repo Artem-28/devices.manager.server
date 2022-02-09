@@ -12,12 +12,11 @@ use League\Fractal\Resource\Item;
 class ContentFileController extends Controller
 {
     use DataPreparation;
-    private $fileService;
+    private FileService $fileService;
 
     public function __construct(FileService $fileService)
     {
-        $this->middleware('auth:sanctum');
-
+        $this->middleware(['auth:sanctum', 'auth.user']);
         $this->fileService = $fileService;
     }
 

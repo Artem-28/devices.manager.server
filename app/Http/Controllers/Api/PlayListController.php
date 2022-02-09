@@ -13,12 +13,11 @@ use League\Fractal\Resource\Collection;
 class PlayListController extends Controller
 {
     use DataPreparation;
-    private $playListService;
+    private PlayListService $playListService;
 
     public function __construct(PlayListService $playListService)
     {
-        $this->middleware('auth:sanctum');
-
+        $this->middleware(['auth:sanctum', 'auth.user']);
         $this->playListService = $playListService;
     }
 

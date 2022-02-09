@@ -5,6 +5,8 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
 /**
  * App\Models\User
@@ -14,12 +16,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $access_token
  * @property string $status
  * @property int $account_id
+ * @property bool $confirm
  * @property string $serial_number
  * @property string $last_contact
  *  */
-class ControlDevice extends Model
+class ControlDevice extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, HasApiTokens;
 
     const ONLINE_STATUS = 'online';
     const OFFLINE_STATUS = 'offline';
@@ -33,6 +36,7 @@ class ControlDevice extends Model
     protected $fillable = [
         'title',
         'serial_number',
+        'confirm',
         'access_token',
         'last_contact',
         'account_id',

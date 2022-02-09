@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,8 +22,7 @@ Route::post('control-devices', [\App\Http\Controllers\Api\ControlDeviceControlle
 Route::get('control-devices', [\App\Http\Controllers\Api\ControlDeviceController::class, 'store']);
 Route::patch('control-devices/{controlDeviceId}', [\App\Http\Controllers\Api\ControlDeviceController::class, 'update']);
 Route::delete('control-devices/{controlDeviceId}', [\App\Http\Controllers\Api\ControlDeviceController::class, 'delete']);
-
-Route::post('live-check', [\App\Http\Controllers\Api\LiveCheckController::class, 'check']);
+Route::post('control-devices/{controlDeviceId}/confirm', [\App\Http\Controllers\Api\ControlDeviceController::class, 'confirm']);
 
 Route::post('playlists', [\App\Http\Controllers\Api\PlayListController::class, 'create']);
 Route::get('playlists', [\App\Http\Controllers\Api\PlayListController::class, 'store']);
@@ -39,3 +37,10 @@ Route::delete('playlists/{playListId}/contents/{contentId}', [\App\Http\Controll
 Route::get('content-types', [\App\Http\Controllers\Api\ContentTypeController::class, 'store']);
 
 Route::post('content-file', [\App\Http\Controllers\Api\ContentFileController::class, 'create']);
+
+
+// Api для устройств
+Route::post('auth-control-device/register', [\App\Http\Controllers\ApiDevice\AuthControlDeviceController::class, 'register']);
+Route::post('auth-control-device/get-token', [\App\Http\Controllers\ApiDevice\AuthControlDeviceController::class, 'getToken']);
+
+Route::post('live-check', [\App\Http\Controllers\ApiDevice\LiveCheckController::class, 'check']);
